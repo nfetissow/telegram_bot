@@ -1,0 +1,39 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "linux": {
+                "command": "TERM=xterm dotnet build ${workspaceFolder}/telegram_bot.csproj"
+            },
+            "windows": {
+                "command": "dotnet",
+                "args": [
+                    "build",
+                    "${workspaceFolder}/telegram_bot.csproj"
+                ]
+            },
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "linux": {
+                "command": "TERM=xterm dotnet run ${workspaceFolder}/telegram_bot.csproj"
+            },
+            "windows": {
+                "command": "dotnet",
+                "args": [
+                    "run",
+                    "${workspaceFolder}/telegram_bot.csproj"
+                ]
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
