@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -20,23 +21,16 @@ namespace telegram_bot.translate {
             return null;
         }
 
-        public IImmutableSet<UpdateType> UpdateTypeFilter { get; } = new HashSet<UpdateType>()
+        public IImmutableSet<UpdateType> UpdateTypeFilter { get; } = 
+            new HashSet<UpdateType>()
             {
                 UpdateType.Message
             }.ToImmutableHashSet();
 
-        public readonly IImmutableSet<MessageType> _MessageTypeFilter = 
+        public IImmutableSet<MessageType> MessageTypeFilter { get; } =
             new HashSet<MessageType>()
             {
                 MessageType.Text
             }.ToImmutableHashSet();
-
-        public IImmutableSet<MessageType> MessageTypeFilter
-        {
-            get
-            {
-                return _MessageTypeFilter;
-            }
-        }
     }
 }
