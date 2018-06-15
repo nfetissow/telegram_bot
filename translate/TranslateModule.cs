@@ -17,7 +17,19 @@ namespace telegram_bot.translate {
         /// <returns></returns>
         public async Task<string> OnMessageReceived(Message m)
         {
-            
+            if(m.Type == MessageType.Text)
+            {
+                string commando = Util.getCommandoString(m.Text);
+                switch(commando)
+                {
+                    case START_COMMAND:
+
+                        break;
+                    case SET_RULE_COMMAND:
+
+                        break;
+                }
+            }
             return null;
         }
 
