@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Cloud.Translation.V2;
+using System;
 using System.Collections.Generic;
 using Telegram.Bot;
 using Telegram.Bot.Args;
