@@ -14,6 +14,7 @@ namespace telegram_bot.translate {
         const string START_COMMAND = "startTranslating";
         const string STOP_COMMAND = "stopTranslating";
         const string SET_RULE_COMMAND = "setRule";
+        const string HELP_COMMAND = "help";
 
         Dictionary<string, Language> translationRules = new Dictionary<string, Language>();
         TranslationClient gTranslateClient = TranslationClient.Create();
@@ -42,6 +43,11 @@ namespace telegram_bot.translate {
                         case SET_RULE_COMMAND:
                             //add the language rule and 
                             return await AddTranslationRule(m.Text.Substring(SET_RULE_COMMAND.Length + 1));
+                        case HELP_COMMAND:
+                            return "Possible commands for the translate bots are:\n" +
+                                " -/" + START_COMMAND + " to start translating every message that fits the translating rules.\n" +
+                                " -/" + STOP_COMMAND + " to stop translating every message.\n" +
+                                " -/" + SET_RULE_COMMAND + " [from lang] [to lang] to set a translation rule.";
                     }
                 } else if(active)
                 {
