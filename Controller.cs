@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using telegram_bot.translate;
 
 namespace telegram_bot
@@ -39,10 +40,13 @@ namespace telegram_bot
             TranslateModule module = modules.GetValueOrDefault(chatId, null);
             if(module == null)
             {
-                AddNewChat(message);
+                module = AddNewChat(message);
+                if(module == null)
+                {
+                    return;//the add new chat method already printed a fitting error message
+                }
             }
             Console.WriteLine(message.From.Username + ": " + message.Text);
-            Console.WriteLine("Test: " + message);
             if(message.Text.Equals("/StopDenBot"))
             {
                 terminateProgram();
@@ -59,35 +63,22 @@ namespace telegram_bot
                             await telegramClient.SendTextMessageAsync(chatId, answerMessage, replyToMessageId: message.MessageId);
                     } catch(Exception e)
                     {
-                        Debug.WriteLine("Exception when processing message. Message: " + message + "\nexception: " + e);
+                        Debug.WriteLine("Exception when processing message. Message: " + message.ToString() + "\nexception: " + e);
                     }
                 });
             }
         }
 
-        void AddNewChat(Message message)
+        TranslateModule AddNewChat(Message message)
         {
-            //This means we have not been in that chat before. 
-            //check whether we have been added and then add new module for this chat.
-            Boolean added = false;
-            if (message.NewChatMembers != null)
-            {
-                foreach(User u in message.NewChatMembers)
-                {
-                    if(u.Id == BOT_ID)
-                    {
-                        modules.Add(message.Chat.Id, new TranslateModule());
-                        added = true;
-                    }
-                }
-            }
-
-            if (!added)
-            {
-                //This is just in case there can be a message from an unkown chat without adding the bot.
-                //Maybe it never will be called.
-                Debug.WriteLine("Got message from unkown chat but not as a new member. message: " + message + " chatId: " + message.Chat.Id);
-            }
+            //If we were just added to the chat we are in the message.NewChatMembers, however
+            //if we were added to the chat before the bot was run we are not, so just add it and assume
+            //we have been added to the chat at some point.
+            //if(message.Chat.Type == ChatType.Channel) Maybe want to check at some point to avoid trying
+            //to reply to channel where we can't write.
+            TranslateModule module = new TranslateModule();
+            modules.Add(message.Chat.Id, module);
+            return module;
         }
     }
 }

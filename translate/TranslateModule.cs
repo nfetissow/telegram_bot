@@ -43,7 +43,8 @@ namespace telegram_bot.translate {
                             return "No longer translating.";
                         case ADD_RULE_COMMAND:
                             //the parameters for the new rule
-                            string parameters = m.Text.Substring(ADD_RULE_COMMAND.Length + 1);
+                            string parameters = m.Text.Substring(ADD_RULE_COMMAND.Length + 
+                                /* One for the slash and one for the trailing space*/2);
                             //add the language rule. 
                             return await AddTranslationRule(parameters);
                         case HELP_COMMAND:
@@ -92,16 +93,19 @@ namespace telegram_bot.translate {
             string[] parts = message.Split(' ');
             //first check both languages are valid and supported
             IList<Language> languages = await gTranslateClient.ListLanguagesAsync();
-            Language first = languages.First((l) => l.Code.Equals(parts[0]) || l.Name.Equals(parts[0]));
+            
+            //Note: Language.Name is always null... Weird.
+
+            Language first = languages.First((l) => parts[0].Equals(l.Code) || parts[0].Equals(l.Name));
             if (first == null)
                 return "Could not find language: " + parts[0];
-            Language second = languages.First((l) => l.Code.Equals(parts[1]) || l.Name.Equals(parts[1]));
+            Language second = languages.First((l) => parts[1].Equals(l.Code) || parts[1].Equals(l.Name));
             if (second == null)
                 return "Could not find language: " + parts[1];
             
             //now add them as rules for translation
             translationRules.Add(first.Code, second);
-            return "Successfully added mapping from " + first.Name + " to " + second.Name;
+            return "Successfully added mapping from " + first.Code + " to " + second.Code;
         }
 
         //TODO the message type filter is used when receving a message, the update type filter
