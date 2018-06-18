@@ -16,16 +16,25 @@ namespace telegram_bot
         
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            //this code runs the controller and waits until it stops the program.
+            mainThread = Thread.CurrentThread;
+            new Controller(() => mainThread.Interrupt());
+            Thread.Sleep(Timeout.Infinite);
+
+            //the following code is for testing purposes
+            /*Console.WriteLine("Hello World!");
             mainThread = Thread.CurrentThread;
             _client.StartReceiving();
             _client.OnMessage += NewMessage;
+            //Thread will sleep until interrupted by Thread.Interrupt();
+            //better than an infinite loop.
             Thread.Sleep(Timeout.Infinite);
-            _client.StopReceiving();
+            //_client.StopReceiving();*/
         }
 
         async static void NewMessage(object sender, MessageEventArgs Args)
         {
+
             if (Args.Message.Text == "stop")
                 mainThread.Interrupt();
             Console.WriteLine(Args.Message.Chat.Username + ": " + Args.Message.Text);

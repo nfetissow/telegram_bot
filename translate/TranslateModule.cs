@@ -13,7 +13,7 @@ namespace telegram_bot.translate {
     {
         const string START_COMMAND = "startTranslating";
         const string STOP_COMMAND = "stopTranslating";
-        const string SET_RULE_COMMAND = "setRule";
+        const string ADD_RULE_COMMAND = "addRule";
         const string HELP_COMMAND = "help";
 
         Dictionary<string, Language> translationRules = new Dictionary<string, Language>();
@@ -24,7 +24,8 @@ namespace telegram_bot.translate {
         /// Invoked when the user sends a message that fits the filters of this module. Doesn't have to return immediately
         /// </summary>
         /// <param name="m">The message.</param>
-        /// <returns>An answer string to the user. If <c>null</c> is returned no answer will be sent.</returns>
+        /// <returns>An answer string to the user. It will be sent as a reply to the message.
+        /// If <c>null</c> is returned no answer will be sent.</returns>
         public async Task<string> OnMessageReceived(Message m)
         {
             if(m.Type == MessageType.Text)
@@ -40,14 +41,16 @@ namespace telegram_bot.translate {
                         case STOP_COMMAND:
                             active = false;
                             return "No longer translating.";
-                        case SET_RULE_COMMAND:
-                            //add the language rule and 
-                            return await AddTranslationRule(m.Text.Substring(SET_RULE_COMMAND.Length + 1));
+                        case ADD_RULE_COMMAND:
+                            //the parameters for the new rule
+                            string parameters = m.Text.Substring(ADD_RULE_COMMAND.Length + 1);
+                            //add the language rule. 
+                            return await AddTranslationRule(parameters);
                         case HELP_COMMAND:
                             return "Possible commands for the translate bots are:\n" +
                                 " -/" + START_COMMAND + " to start translating every message that fits the translating rules.\n" +
                                 " -/" + STOP_COMMAND + " to stop translating every message.\n" +
-                                " -/" + SET_RULE_COMMAND + " [from lang] [to lang] to set a translation rule.";
+                                " -/" + ADD_RULE_COMMAND + " [from lang] [to lang] to add a new translation rule.";
                     }
                 } else if(active)
                 {
@@ -58,8 +61,16 @@ namespace telegram_bot.translate {
             return null;
         }
 
+        /// <summary>
+        /// Detect the language of the message
+        /// </summary>
+        /// <param name="message">The text to be translated.</param>
+        /// <returns>The translated text or <c>null</c> if either the translation 
+        /// failed or the text was empty or there was no translation rule for this language.</returns>
         async Task<string> TranslateText(string message)
         {
+            if (String.IsNullOrWhiteSpace(message))
+                return null;
             try
             {
                 string languageCode = (await gTranslateClient.DetectLanguageAsync(message)).Language;
@@ -74,8 +85,6 @@ namespace telegram_bot.translate {
                 Debug.WriteLine("Exception when trying to translate. message:  " + message + " Exception: " + e);
                 return null;
             }
-            
-            return null;
         }
 
         async Task<string> AddTranslationRule(string message)
@@ -95,16 +104,22 @@ namespace telegram_bot.translate {
             return "Successfully added mapping from " + first.Name + " to " + second.Name;
         }
 
-        public IImmutableSet<UpdateType> UpdateTypeFilter { get; } = 
-            new HashSet<UpdateType>()
-            {
-                UpdateType.Message
-            }.ToImmutableHashSet();
+        //TODO the message type filter is used when receving a message, the update type filter
+        //can be directly set when asking for updates. That means the latter needs to be static as well.
+        //It for sure is not good code style to just duplicate the variable. How to do?
 
         public IImmutableSet<MessageType> MessageTypeFilter { get; } =
             new HashSet<MessageType>()
             {
                 MessageType.Text
+            }.ToImmutableHashSet();
+
+        public IImmutableSet<UpdateType> UpdateTypeFilter { get; } = UpdateTypeFilterStatic;
+
+        public static IImmutableSet<UpdateType> UpdateTypeFilterStatic { get; } =
+            new HashSet<UpdateType>()
+            {
+                UpdateType.Message
             }.ToImmutableHashSet();
     }
 }
