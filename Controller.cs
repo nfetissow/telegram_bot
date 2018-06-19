@@ -47,7 +47,7 @@ namespace telegram_bot
                 }
             }
             Console.WriteLine(message.From.Username + ": " + message.Text);
-            if(message.Text.Equals("/StopDenBot"))
+            if("/StopDenBot".Equals(message.Text))
             {
                 terminateProgram();
                 return;
