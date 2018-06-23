@@ -15,7 +15,8 @@ namespace telegram_bot
     class Controller
     {
         //this probably needs to change when changing the token.
-        const long BOT_ID = 537933934;
+        public const long BOT_ID = 537933934;
+        public const string BOT_NAME = "CSTest_my_bot";
         //id of bot is 537933934, when added to group gets new empty message with new user him. Also type of chat is Group
 
         readonly TelegramBotClient telegramClient = 

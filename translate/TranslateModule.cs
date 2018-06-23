@@ -30,10 +30,10 @@ namespace telegram_bot.translate {
         {
             if(m.Type == MessageType.Text)
             {
-                string commando = Util.getCommandoString(m.Text);
-                if (commando != null)
+                Command command = Command.TryParse(m.Text);
+                if (command != null)
                 {
-                    switch (commando)
+                    switch (command.CommandCode)
                     {
                         case START_COMMAND:
                             active = true;
@@ -42,11 +42,8 @@ namespace telegram_bot.translate {
                             active = false;
                             return "No longer translating.";
                         case ADD_RULE_COMMAND:
-                            //the parameters for the new rule
-                            string parameters = m.Text.Substring(ADD_RULE_COMMAND.Length + 
-                                /* One for the slash and one for the trailing space*/2);
                             //add the language rule. 
-                            return await AddTranslationRule(parameters);
+                            return await AddTranslationRule(command.Parameters);
                         case HELP_COMMAND:
                             return "Possible commands for the translate bots are:\n" +
                                 " -/" + START_COMMAND + " to start translating every message that fits the translating rules.\n" +
@@ -88,20 +85,19 @@ namespace telegram_bot.translate {
             }
         }
 
-        async Task<string> AddTranslationRule(string message)
+        async Task<string> AddTranslationRule(string[] message)
         {
-            string[] parts = message.Split(' ');
             //first check both languages are valid and supported
             IList<Language> languages = await gTranslateClient.ListLanguagesAsync();
             
             //Note: Language.Name is always null... Weird.
 
-            Language first = languages.First((l) => parts[0].Equals(l.Code) || parts[0].Equals(l.Name));
+            Language first = languages.First((l) => message[0].Equals(l.Code) || message[0].Equals(l.Name));
             if (first == null)
-                return "Could not find language: " + parts[0];
-            Language second = languages.First((l) => parts[1].Equals(l.Code) || parts[1].Equals(l.Name));
+                return "Could not find language: " + message[0];
+            Language second = languages.First((l) => message[1].Equals(l.Code) || message[1].Equals(l.Name));
             if (second == null)
-                return "Could not find language: " + parts[1];
+                return "Could not find language: " + message[1];
             
             //now add them as rules for translation
             translationRules.Add(first.Code, second);
