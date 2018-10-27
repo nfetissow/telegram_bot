@@ -30,7 +30,22 @@
                 "command": "dotnet",
                 "args": [
                     "run",
-                    "${workspaceFolder}/telegram_bot.csproj"
+                    "${workspaceFolder}/telegram_bot/telegram_bot.csproj"
+                ]
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "linux": {
+                "command": "TERM=xterm dotnet test ${workspaceFolder}/tests/tests.csproj"
+            },
+            "windows": {
+                "command": "dotnet",
+                "args": [
+                    "test",
+,                   "${workspaceFolder}/tests/test.csproj"
                 ]
             },
             "problemMatcher": "$msCompile"

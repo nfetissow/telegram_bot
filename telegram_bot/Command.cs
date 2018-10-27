@@ -7,7 +7,7 @@ namespace telegram_bot
     /// <summary>
     /// Represents a command from the user.
     /// </summary>
-    class Command
+    public class Command
     {
         public string CommandCode { get; }
 
