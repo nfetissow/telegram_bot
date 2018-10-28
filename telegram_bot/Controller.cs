@@ -44,7 +44,7 @@ namespace telegram_bot
                 module = AddNewChat(message);
                 if(module == null)
                 {
-                    return;//the add new chat method already printed a fitting error message
+                    return;//the add new chat method should care about printing a fitting error message
                 }
             }
             Console.WriteLine(message.From.Username + ": " + message.Text);

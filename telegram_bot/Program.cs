@@ -1,10 +1,7 @@
-﻿using Google.Cloud.Translation.V2;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Args;
-using Telegram.Bot.Types;
 
 namespace telegram_bot
 {
@@ -20,16 +17,6 @@ namespace telegram_bot
             mainThread = Thread.CurrentThread;
             new Controller(() => mainThread.Interrupt());
             Thread.Sleep(Timeout.Infinite);
-
-            //the following code is for testing purposes
-            /*Console.WriteLine("Hello World!");
-            mainThread = Thread.CurrentThread;
-            _client.StartReceiving();
-            _client.OnMessage += NewMessage;
-            //Thread will sleep until interrupted by Thread.Interrupt();
-            //better than an infinite loop.
-            Thread.Sleep(Timeout.Infinite);
-            //_client.StopReceiving();*/
         }
 
         async static void NewMessage(object sender, MessageEventArgs Args)

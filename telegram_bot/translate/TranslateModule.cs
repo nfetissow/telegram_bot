@@ -1,14 +1,12 @@
-using Google.Cloud.Translation.V2;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace telegram_bot.translate {
+namespace telegram_bot.translate
+{
     class TranslateModule
     {
         const string START_COMMAND = "startTranslating";
@@ -16,8 +14,7 @@ namespace telegram_bot.translate {
         const string ADD_RULE_COMMAND = "addRule";
         const string HELP_COMMAND = "help";
 
-        Dictionary<string, Language> translationRules = new Dictionary<string, Language>();
-        TranslationClient gTranslateClient = TranslationClient.Create();
+        Dictionary<string, string> translationRules = new Dictionary<string, string>();
         bool active = false;
 
         /// <summary>
@@ -69,7 +66,7 @@ namespace telegram_bot.translate {
         {
             if (String.IsNullOrWhiteSpace(message))
                 return null;
-            try
+            /*try
             {
                 string languageCode = (await gTranslateClient.DetectLanguageAsync(message)).Language;
                 //get the target language for translation if present
@@ -82,12 +79,13 @@ namespace telegram_bot.translate {
                 //TODO look up is this the correct way or is there logging api?
                 Debug.WriteLine("Exception when trying to translate. message:  " + message + " Exception: " + e);
                 return null;
-            }
+            }*/
+            return null;
         }
 
         async Task<string> AddTranslationRule(string[] message)
         {
-            //first check both languages are valid and supported
+            /*//first check both languages are valid and supported
             IList<Language> languages = await gTranslateClient.ListLanguagesAsync();
             
             //Note: Language.Name is always null... Weird.
@@ -101,7 +99,8 @@ namespace telegram_bot.translate {
             
             //now add them as rules for translation
             translationRules.Add(first.Code, second);
-            return "Successfully added mapping from " + first.Code + " to " + second.Code;
+            return "Successfully added mapping from " + first.Code + " to " + second.Code;*/
+            return null;
         }
 
         //TODO the message type filter is used when receving a message, the update type filter

@@ -45,7 +45,7 @@
                 "command": "dotnet",
                 "args": [
                     "test",
-,                   "${workspaceFolder}/tests/test.csproj"
+                    "${workspaceFolder}/tests/test.csproj"
                 ]
             },
             "problemMatcher": "$msCompile"
