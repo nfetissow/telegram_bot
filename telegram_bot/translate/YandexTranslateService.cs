@@ -1,13 +1,11 @@
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
-using System.Linq;
 
-namespace telegram_bot.translate {
+namespace telegram_bot.translate
+{
     public class YandexTranslateService {
         private static readonly HttpClient client = new HttpClient() {
             BaseAddress = new System.Uri("https://translate.yandex.net/api/v1.5/tr.json/")

@@ -1,15 +1,15 @@
+using System;
 using Xunit;
 using telegram_bot.translate;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace tests.translate
-{
-    public class YandexTranslateServiceTest {
+namespace tests.translate {
+    public class AzureTranslateServiceTest {
         [Fact]
         public async Task TestTranslateText()
         {
-            YandexTranslateService service = new YandexTranslateService();
+            AzureTranslateService service = new AzureTranslateService();
             Assert.Equal("Понедельник Вторник", 
                 await service.TranslateText("Monday Tuesday", "en", "ru"));
         }
@@ -17,13 +17,13 @@ namespace tests.translate
         [Fact]
         public async Task TestDetectLanguage()
         {
-            YandexTranslateService service = new YandexTranslateService();
+            AzureTranslateService service = new AzureTranslateService();
             Assert.Equal("en", await service.DetectLanguage("Monday"));
         }
 
         [Fact]
         public async Task TestGetLanguages() {
-            YandexTranslateService service = new YandexTranslateService();
+            AzureTranslateService service = new AzureTranslateService();
             List<string> languages = await service.GetLanguages();
             Assert.Contains("English: en", languages);
         }
