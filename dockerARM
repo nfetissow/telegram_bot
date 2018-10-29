@@ -4,6 +4,7 @@ WORKDIR /app
 # copy csproj and restore as distinct layers
 COPY telegram_bot/*.csproj ./telegram_bot/
 WORKDIR /app/telegram_bot
+RUN apt-get update && apt-get install libunwind8
 RUN dotnet restore
 
 # copy and build app and libraries
