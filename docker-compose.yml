@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: dockerARM
+    restart: always
     volumes:
       - data-volume:/app/data
 

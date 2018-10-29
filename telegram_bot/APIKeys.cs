@@ -8,7 +8,7 @@ namespace telegram_bot
     {
         public const string TELEGRAM_KEY = "";
 
-        public const string YANDEX_KEY = 
+        public const string YANDEX_KEY =
             "";
 
         public const string AZURE_KEY = "";

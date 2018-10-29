@@ -17,20 +17,45 @@ namespace telegram_bot
         public const string BOT_NAME = "CSTest_my_bot";
         //id of bot is 537933934, when added to group gets new empty message with new user him. 
         //Also type of chat is Group
+        const string SAVE_FILE_PATH = "data/config.save";
 
         readonly TelegramBotClient telegramClient = 
             new TelegramBotClient(/*change id when changing token*/APIKeys.TELEGRAM_KEY);
         readonly Action terminateProgram;
-        readonly Dictionary<long, TranslateModule> modules= new Dictionary<long, TranslateModule>();
+        readonly Dictionary<long, IModule> modules= new Dictionary<long, IModule>();
 
         public Controller(Action terminateProgram)
         {
             this.terminateProgram = terminateProgram;
             telegramClient.OnMessage += OnReceiveMessage;
 
+            modules = LoadFromSaveFile();
+
             telegramClient.StartReceiving(TranslateModule.UpdateTypeFilterStatic.ToArray());
         }
 
+        Dictionary<long, IModule> LoadFromSaveFile()
+        {
+            if (System.IO.File.Exists(SAVE_FILE_PATH))
+            {
+                try
+                {
+                    var dict = Serializer.ReadFromBinaryFile<Dictionary<long, IModule>>(SAVE_FILE_PATH);
+                    Debug.WriteLine("Deserialized: " + string.Join(", ", dict.Select(x => "Chat: " + x.Key + " has: " + x.Value.ToString()).ToArray()));
+                    foreach (IModule m in dict.Values)
+                        m.OnModuleChanged += OnModuleChanged;
+                    return dict;
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Sadly unable to load from save file:\n" + e);
+                }
+            } else
+            {
+                Debug.WriteLine("File does not exist");
+            }
+            return modules;
+        }
 
         void OnReceiveMessage(object sender, MessageEventArgs args)
         {
@@ -55,7 +80,7 @@ namespace telegram_bot
         void PassMessageToModules(Message message)
         {
             long chatId = message.Chat.Id;
-            TranslateModule module = modules.GetValueOrDefault(chatId, null);
+            IModule module = modules.GetValueOrDefault(chatId, null);
             if (module.MessageTypeFilter.Contains(message.Type))
             {
                 Task.Run(async () =>
@@ -82,13 +107,27 @@ namespace telegram_bot
             //if(message.Chat.Type == ChatType.Channel) Maybe want to check at some point to avoid trying
             //to reply to channel where we can't write.
             TranslateModule module = new TranslateModule();
+            module.OnModuleChanged += OnModuleChanged;
             modules.Add(message.Chat.Id, module);
+            OnModuleChanged();
             return module != null;
+        }
+
+        public void OnModuleChanged()
+        {
+            try
+            {
+                Serializer.WriteToBinaryFile(SAVE_FILE_PATH, modules, false);
+                
+            } catch (Exception e)
+            {
+                Debug.WriteLine("Exception when writing the modules: " + e);
+            }
         }
 
         //TODO implement saving of modules
 
-        class MessageProcessedCallbackImplementation : MessageProcessedCallback
+        class MessageProcessedCallbackImplementation : IMessageProcessedCallback
         {
             private readonly long chatId;
             private readonly int messageId;
