@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace telegram_bot.translate
 {
@@ -23,7 +24,12 @@ namespace telegram_bot.translate
             var queryString = QueryHelpers.AddQueryString(TRANSLATE_TEXT_PATH, pars);
             var resultString = await client.GetStringAsync(queryString);
             var result = JsonConvert.DeserializeObject<TranslateTextResponse>(resultString);
-            return result.text[0];
+            return AppendYandexText(result.text[0]);
+        }
+
+        string AppendYandexText(string translation)
+        {
+            return translation + "\nPowered by Yandex translate.";
         }
 
         class TranslateTextResponse
@@ -57,25 +63,40 @@ namespace telegram_bot.translate
         const string GET_LANGUAGE_PATH = "getLangs";
 
         public async Task<List<string>> GetLanguages() {
+            var langsDict = (await GetLangsFromServer()).langs;
+            List<string> readableList = new List<string>();
+            foreach (KeyValuePair<string, string> entry in langsDict)
+            {
+                readableList.Add(entry.Value + ": " + entry.Key);
+            }
+            return readableList;
+        }
+
+        public async Task<bool> IsTranslationRuleValid(string sourceLang, string targetLang)
+        {
+            string asRule = sourceLang + "-" + targetLang;
+            string[] validRules = (await GetLangsFromServer()).dirs;
+            return validRules.Contains(asRule);
+        }
+
+        class GetLanguagesResponse{
+            /// <summary>
+            /// Contains all possible translation directions in form en-ru
+            /// </summary>
+            public string[] dirs;
+            /// <summary>
+            /// Contains pairs of languagecode, displayname of language e.g. en English
+            /// </summary>
+            public Dictionary<string, string> langs;
+        }
+
+        async Task<GetLanguagesResponse> GetLangsFromServer()
+        {
             Dictionary<string, string> pars = GetParameterDict();
             pars.Add("ui", "en");
             var queryString = QueryHelpers.AddQueryString(GET_LANGUAGE_PATH, pars);
             var resultString = await client.GetStringAsync(queryString);
-            var result = JsonConvert.DeserializeObject<GetLanguagesResponse>(resultString);
-            return result.GetReadableLanguageList();
-        }
-
-        class GetLanguagesResponse{
-            public string[] dirs;
-            public Dictionary<string, string> langs;
-
-            public List<string> GetReadableLanguageList() {
-                List<string> readableList = new List<string>();
-                foreach(KeyValuePair<string, string> entry in langs) {
-                    readableList.Add(entry.Value + ": " + entry.Key);
-                }
-                return readableList;
-            }
+            return JsonConvert.DeserializeObject<GetLanguagesResponse>(resultString);
         }
 
         #endregion

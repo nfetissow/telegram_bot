@@ -26,6 +26,7 @@ namespace telegram_bot
         /// <returns>The command if it could be successfully parsed, <c>null</c> otherwise.</returns>
         public static Command TryParse(string UserText)
         {
+            UserText = UserText.Trim();
             if(UserText.StartsWith('/'))
             {
                 int firstSpace = UserText.IndexOf(' ');
