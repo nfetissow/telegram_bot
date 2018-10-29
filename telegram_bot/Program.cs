@@ -8,7 +8,7 @@ namespace telegram_bot
     class Program
     {
         static bool ended = false;
-        static TelegramBotClient _client = new TelegramBotClient("537933934:AAGJUyagFP4x2nhtZAD2OSqUZLPODfYFpEU");
+        static TelegramBotClient _client = new TelegramBotClient(APIKeys.TELEGRAM_KEY);
         static Thread mainThread;
         
         static void Main(string[] args)

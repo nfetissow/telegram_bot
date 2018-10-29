@@ -82,12 +82,9 @@ namespace telegram_bot.translate {
 
         #endregion
 
-        const string API_KEY = 
-            "At least this api key I will not upload";
-
         static Dictionary<string, string> GetParameterDict() {
             Dictionary<string, string> pars = new Dictionary<string, string>();
-            pars.Add("key", API_KEY);
+            pars.Add("key", APIKeys.YANDEX_KEY);
             return pars;
         }
     }
