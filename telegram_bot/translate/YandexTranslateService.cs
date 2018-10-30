@@ -29,7 +29,7 @@ namespace telegram_bot.translate
 
         string AppendYandexText(string translation)
         {
-            return translation + "\nPowered by Yandex translate.";
+            return translation + "\nPowered by [Yandex.translate](http://translate.yandex.com/).";
         }
 
         class TranslateTextResponse

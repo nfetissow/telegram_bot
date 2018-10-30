@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using telegram_bot.translate;
 
 namespace telegram_bot
@@ -143,7 +144,7 @@ namespace telegram_bot
             public async Task OnAnswerMessageGenerated(string message)
             {
                 await telegramClient.SendTextMessageAsync(chatId,
-                                    message, replyToMessageId: messageId);
+                                    message, replyToMessageId: messageId, parseMode: ParseMode.Markdown);
             }
         }
     }
