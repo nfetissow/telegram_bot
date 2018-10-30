@@ -4,7 +4,7 @@ WORKDIR /app
 # copy csproj and restore as distinct layers
 COPY telegram_bot/*.csproj ./telegram_bot/
 WORKDIR /app/telegram_bot
-RUN apt-get update && apt-get install libunwind8
+RUN apt-get update && apt-get -qq -y install libunwind8 gettext
 RUN dotnet restore
 
 # copy and build app and libraries
@@ -16,10 +16,10 @@ RUN dotnet add package ILLink.Tasks -v 0.1.5-preview-1841731 -s https://dotnet.m
 RUN dotnet publish -c Release -r linux-arm -o out /p:ShowLinkerSizeComparison=true
 
 # test application -- see: dotnet-docker-unit-testing.md
-FROM build AS testrunner
-WORKDIR /app/tests
-COPY tests/. .
-ENTRYPOINT ["dotnet", "test", "--logger:trx"]
+#FROM build AS testrunner
+#WORKDIR /app/tests
+#COPY tests/. .
+#ENTRYPOINT ["dotnet", "test", "--logger:trx"]
 
 
 FROM microsoft/dotnet:2.1-runtime-deps-stretch-slim-arm32v7 AS runtime
