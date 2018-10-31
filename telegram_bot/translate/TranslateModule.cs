@@ -141,7 +141,7 @@ namespace telegram_bot.translate
         
         async Task<string> ValidateLangRule(string[] message)
         {
-            if(message.Length != 2)
+            if(message == null || message.Length != 2)
             {
                 return INSUFFICIENT_RULE_PARAMETERS_MESSAGE;
             }
