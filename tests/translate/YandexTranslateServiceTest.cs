@@ -10,7 +10,7 @@ namespace tests.translate
         public async Task TestTranslateText()
         {
             YandexTranslateService service = new YandexTranslateService();
-            Assert.Equal("Понедельник Вторник\nPowered by Yandex translate.", 
+            Assert.Equal("Понедельник Вторник\nPowered by [Yandex.translate](http://translate.yandex.com/).", 
                 await service.TranslateText("Monday Tuesday", "en", "ru"));
         }
 

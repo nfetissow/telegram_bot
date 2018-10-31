@@ -121,7 +121,7 @@ namespace telegram_bot.translate
                 await callback.OnAnswerMessageGenerated(translation);
             } catch(Exception e)
             {
-                Debug.WriteLine("Exception when trying to translate. message:  " +
+                Console.WriteLine("Exception when trying to translate. message:  " +
                     message + " Exception: " + e);
                 await callback.OnAnswerMessageGenerated(TRANSLATION_FAILED_MESSAGE);
             }

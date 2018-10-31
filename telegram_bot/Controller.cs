@@ -43,18 +43,18 @@ namespace telegram_bot
                 try
                 {
                     var dict = Serializer.ReadFromBinaryFile<Dictionary<long, IModule>>(SAVE_FILE_PATH);
-                    Debug.WriteLine("Deserialized: " + string.Join(", ", dict.Select(x => "Chat: " + x.Key + " has: " + x.Value.ToString()).ToArray()));
+                    Console.WriteLine("Deserialized: " + string.Join(", ", dict.Select(x => "Chat: " + x.Key + " has: " + x.Value.ToString()).ToArray()));
                     foreach (IModule m in dict.Values)
                         m.OnModuleChanged += OnModuleChanged;
                     return dict;
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Sadly unable to load from save file:\n" + e);
+                    Console.WriteLine("Sadly unable to load from save file:\n" + e);
                 }
             } else
             {
-                Debug.WriteLine("File does not exist");
+                Console.WriteLine("File does not exist");
             }
             return modules;
         }
@@ -95,7 +95,7 @@ namespace telegram_bot
                     }
                     catch (Exception e)
                     {
-                        Debug.WriteLine("Exception when processing message. Message: " + message.ToString() + "\nexception: " + e);
+                        Console.WriteLine("Exception when processing message. Message: " + message.ToString() + "\nexception: " + e);
                     }
                 });
             }
@@ -123,7 +123,7 @@ namespace telegram_bot
                 
             } catch (Exception e)
             {
-                Debug.WriteLine("Exception when writing the modules: " + e);
+                Console.WriteLine("Exception when writing the modules: " + e);
             }
         }
 
