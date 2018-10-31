@@ -16,6 +16,7 @@ namespace telegram_bot
         //this probably needs to change when changing the token.
         public const long BOT_ID = 537933934;
         public const string BOT_NAME = "CSTest_my_bot";
+        public const string BOT_DISPLAY_NAME = "CSTestBot";
         //id of bot is 537933934, when added to group gets new empty message with new user him. 
         //Also type of chat is Group
         const string SAVE_FILE_PATH = "data/config.save";

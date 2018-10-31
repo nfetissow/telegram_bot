@@ -46,13 +46,15 @@ namespace telegram_bot
                 if(firstAt != -1)
                 {
                     string botName = command.Substring(firstAt + 1);
-                    if (!Controller.BOT_NAME.Equals(botName))
+                    if (Controller.BOT_NAME.Equals(botName) || Controller.BOT_DISPLAY_NAME.Equals(botName))
+                    {
+                        command = command.Substring(0, firstAt);
+                    }
+                    else
                     {
                         //not meant for our bot
                         return null;
                     }
-                    else
-                        command = command.Substring(0, firstAt);
                 }
 
                 return new Command(command, parameters);
