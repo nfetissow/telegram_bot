@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -10,8 +11,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace telegram_bot.translate
 {
-    [Serializable]
-    class TranslateModule: IModule, IDeserializationCallback
+    class TranslateModule: IModule
     {
         const string START_COMMAND = "startTranslating";
         const string STOP_COMMAND = "stopTranslating";
@@ -39,21 +39,18 @@ namespace telegram_bot.translate
         private const string TRANSLATION_FAILED_MESSAGE = 
             "I are sorry, an unexpected error occured. I could not translate the message.";
 
-        [field: NonSerialized]
+        [field: JsonIgnore]
         public event IModuleChangedCallback OnModuleChanged;
 
+        [JsonProperty]
         readonly Dictionary<string, string> translationRules = new Dictionary<string, string>();
+        [JsonProperty]
         bool active = false;
+        [JsonProperty]
         bool firstMessage = true;
 
-        [NonSerialized]
-        YandexTranslateService yandexTranslationService;
-
-        public TranslateModule()
-        {
-            //because of deserialization I need a common way to do this.
-            OnDeserialization(null);
-        }
+        [JsonIgnore]
+        YandexTranslateService yandexTranslationService = new YandexTranslateService();
 
         public async Task OnMessageReceived(Message m, IMessageProcessedCallback callback)
         {
@@ -163,31 +160,17 @@ namespace telegram_bot.translate
             return "active: " + active + " rules: " + string.Join(";", translationRules.Select(x => x.Key + "=" + x.Value).ToArray());
         }
 
-        public void OnDeserialization(object sender)
-        {
-            yandexTranslationService = new YandexTranslateService();
-            _MessageTypeFilter =
-            new HashSet<MessageType>()
+        [JsonIgnore]
+        public IImmutableSet<MessageType> MessageTypeFilter { get; } = new HashSet<MessageType>()
             {
                 MessageType.Text
             }.ToImmutableHashSet();
-        }
-
-        [NonSerialized]
-        IImmutableSet<MessageType> _MessageTypeFilter;
-
-        public IImmutableSet<MessageType> MessageTypeFilter { get
-            {
-                return _MessageTypeFilter;
-            }
-        }
 
         public static IImmutableSet<UpdateType> UpdateTypeFilterStatic { get; } =
             new HashSet<UpdateType>()
             {
                 UpdateType.Message
             }.ToImmutableHashSet();
-
-        //TODO implement serialize and unserialize
+        
     }
 }

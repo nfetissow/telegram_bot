@@ -3,7 +3,7 @@ services:
   bot:
     build:
       context: .
-      dockerfile: dockerARM
+      dockerfile: dockerDesktop
     restart: always
     volumes:
       - data-volume:/app/data

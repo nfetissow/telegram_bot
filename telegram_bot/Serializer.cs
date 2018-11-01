@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,6 +8,8 @@ namespace telegram_bot
 {
     static class Serializer
     {
+        static JsonSerializerSettings jsonSettings = new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.Objects };
+        
         /// <summary>
         /// Writes the given object instance to a binary file.
         /// <para>Object type (and all child types) must be decorated with the [Serializable] attribute.</para>
@@ -18,11 +21,9 @@ namespace telegram_bot
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
         public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
-            using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
-            {
-                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                binaryFormatter.Serialize(stream, objectToWrite);
-            }
+            if (append) throw new NotImplementedException("Didn't need append when I implemented this");
+            Directory.GetParent(filePath).Create();
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(objectToWrite, jsonSettings));
         }
 
         /// <summary>
@@ -33,11 +34,7 @@ namespace telegram_bot
         /// <returns>Returns a new instance of the object read from the binary file.</returns>
         public static T ReadFromBinaryFile<T>(string filePath)
         {
-            using (Stream stream = File.Open(filePath, FileMode.Open))
-            {
-                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                return (T)binaryFormatter.Deserialize(stream);
-            }
+            return JsonConvert.DeserializeObject<T>(File.ReadAllText(filePath), jsonSettings);
         }
     }
 }

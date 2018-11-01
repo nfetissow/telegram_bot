@@ -127,8 +127,6 @@ namespace telegram_bot
             }
         }
 
-        //TODO implement saving of modules
-
         class MessageProcessedCallbackImplementation : IMessageProcessedCallback
         {
             private readonly long chatId;
