@@ -1,3 +1,8 @@
+#google cloud code file
+TranslateApp-5a5d5ab5607b.json
+#run file for windows 10 iot
+runFile.ps1
+
 # visual studio code
 .vscode/*
 !.vscode/settings.json

@@ -1,0 +1,12 @@
+version: "3.3"
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: dockerDesktop
+    restart: always
+    volumes:
+      - data-volume:/app/data
+
+volumes:
+  data-volume:
